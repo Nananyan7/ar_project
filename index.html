@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR名刺システム</title>
+    <!-- A-FrameとAR.jsのライブラリを読み込み -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <!-- ARシーンの設定 -->
+    <a-scene embedded arjs>
+        <!-- マーカーがスキャンされると名刺情報が表示されます -->
+        <a-marker preset="hiro">
+            <a-text id="ar-name" value="名前" position="0 0.5 0" scale="2 2 2" color="#FFFFFF"></a-text>
+            <a-text id="ar-company" value="会社" position="0 0.2 0" scale="1.5 1.5 1.5" color="#FFFFFF"></a-text>
+            <a-text id="ar-position" value="役職" position="0 -0.1 0" scale="1.5 1.5 1.5" color="#FFFFFF"></a-text>
+            <a-text id="ar-email" value="メール" position="0 -0.4 0" scale="1.5 1.5 1.5" color="#FFFFFF"></a-text>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- ユーザー情報を取得して表示 -->
+    <script>
+        // URLの最後のIDを取得し、APIにリクエストを送る
+        const userId = window.location.pathname.split('/').pop();
+        fetch(`https://your-backend-url.com/user/${userId}`)  // HerokuやVercelのURLに置き換え
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ar-name').setAttribute('value', data.name);
+                document.getElementById('ar-company').setAttribute('value', data.company);
+                document.getElementById('ar-position').setAttribute('value', data.position);
+                document.getElementById('ar-email').setAttribute('value', data.email);
+            })
+            .catch(error => {
+                console.error("エラーが発生しました:", error);
+            });
+    </script>
+</body>
+</html>
